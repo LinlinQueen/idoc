@@ -61,6 +61,10 @@ public class SimplifyMethodHandler implements IHandler<DocMethod, SimplifyDocMet
      * @return 构建后的参数结果
      */
     private List<SimplifyDocField> buildReturnDetails(DocMethodReturn docMethodReturn) {
+        if(docMethodReturn.getFullName()==null|| "".equals(docMethodReturn.getPackageName())
+                || docMethodReturn.getPackageName().startsWith("java")){
+            return null;
+        }
         List<SimplifyDocField> resultList = new ArrayList<>();
         SimplifyDocField result = new SimplifyDocField();
         result.setType(docMethodReturn.getFullName());
@@ -69,20 +73,22 @@ public class SimplifyMethodHandler implements IHandler<DocMethod, SimplifyDocMet
 
         List<DocField> docFieldList = docMethodReturn.getDocFieldList();
         List<SimplifyDocField> list = new ArrayList<>();
-        for (DocField docField : docFieldList) {
-            SimplifyDocField simplifyDocField = new SimplifyDocField();
-            simplifyDocField.setType(docField.getType());
-            simplifyDocField.setTypeAlias(docField.getTypeAlias());
-            simplifyDocField.setCommentFirstLine(CommentUtil.getFirstLine(docField.getComment()));
-            simplifyDocField.setRemark(docField.getRemark());
-            simplifyDocField.setName(docField.getName());
-            List<DocField> subDocFieldList = docField.getDocFieldList();
-            if (CollectionUtil.isNotEmpty(subDocFieldList)) {
-                List<SimplifyDocField> simplifyDocFieldList = CollectionUtil.buildList(subDocFieldList,
-                        new SimplifyDocFieldHandler());
-                simplifyDocField.setEntries(simplifyDocFieldList);
+        if (CollectionUtil.isNotEmpty(docFieldList)) {
+            for (DocField docField : docFieldList) {
+                SimplifyDocField simplifyDocField = new SimplifyDocField();
+                simplifyDocField.setType(docField.getType());
+                simplifyDocField.setTypeAlias(docField.getTypeAlias());
+                simplifyDocField.setCommentFirstLine(CommentUtil.getFirstLine(docField.getComment()));
+                simplifyDocField.setRemark(docField.getRemark());
+                simplifyDocField.setName(docField.getName());
+                List<DocField> subDocFieldList = docField.getDocFieldList();
+                if (CollectionUtil.isNotEmpty(subDocFieldList)) {
+                    List<SimplifyDocField> simplifyDocFieldList = CollectionUtil.buildList(subDocFieldList,
+                            new SimplifyDocFieldHandler());
+                    simplifyDocField.setEntries(simplifyDocFieldList);
+                }
+                list.add(simplifyDocField);
             }
-            list.add(simplifyDocField);
         }
         result.setEntries(list);
         resultList.add(result);
@@ -107,6 +113,9 @@ public class SimplifyMethodHandler implements IHandler<DocMethod, SimplifyDocMet
      */
     private SimplifyDocReturn buildReturn(final DocMethodReturn docMethodReturn) {
         if (ObjectUtil.isNull(docMethodReturn)) {
+            return null;
+        }
+        if(docMethodReturn.getPackageName()==null){
             return null;
         }
 
