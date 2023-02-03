@@ -1,13 +1,14 @@
+
 <#if class??>
 ## ${class.name}--${class.commentFirstLine!"暂无说明"}
 
-><span style="color: #FF6666; ">${class.remark!class.comment+" "!"暂无说明"}</span>
+> <span style="color: #FF6666;">${class.remark!class.comment+" "!"暂无说明"}</span>
 
 <#if class.methods??>
 <#list class.methods as method>
 ###  ${method.name}-${method.commentFirstLine!"暂无说明"}
 
-><span style="color: coral; ">${method.remark!method.comment+" "!"暂无说明"}</span>
+> <span style="color: coral; ">${method.remark!method.comment+" "!"暂无说明"}</span>
 
 #### <span style="color: #CC6699; ">方法入参</span>
 
@@ -64,5 +65,8 @@
 </#list>
 </#if>
 </#if>
+
+
+
 
 
